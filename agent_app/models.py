@@ -2,7 +2,7 @@ from django.db import models
 
 
 SEGMENT_CHOICES = [
-    ("SMB", "SMB"),
+    ("SMB", "SMB"), # first value is stored in the database, second value is human-readable and for django forms
     ("Mid_market", "Mid-Market"),
     ("Enterprise", "Enterprise"),
 ]
@@ -26,9 +26,7 @@ PLAN_CHOICES = [
 
 class Subscription(models.Model):
     subscription_id = models.IntegerField(primary_key=True)
-    customer = models.OneToOneField(
-        Customer, on_delete=models.CASCADE, related_name="subscription"
-    )
+    customer = models.OneToOneField(Customer, on_delete=models.CASCADE, related_name="subscription")
     plan = models.CharField(max_length=20, choices=PLAN_CHOICES)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     start_date = models.DateField()
@@ -39,18 +37,12 @@ class Subscription(models.Model):
 
 
 class DailyUsage(models.Model):
-    customer = models.ForeignKey(
-        Customer, on_delete=models.CASCADE, related_name="daily_usage"
-    )
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="daily_usage")
     date = models.DateField()
     usage = models.IntegerField()
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["customer", "date"], name="unique_customer_usage_date"
-            )
-        ]
+        constraints = [models.UniqueConstraint(fields=["customer", "date"], name="unique_customer_usage_date")]
         indexes = [models.Index(fields=["customer", "date"])]
 
     def __str__(self):
