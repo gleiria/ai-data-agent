@@ -22,4 +22,5 @@ from agent_app import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.dashboard, name="dashboard"),
+    path("ask/", views.ask_agent, name="ask_agent"),
 ]
